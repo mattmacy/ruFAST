@@ -1,0 +1,8 @@
+[package]
+name = "ruFAST"
+version = "0.1.0"
+authors = ["Matt Macy <mmacy@nextbsd.org>"]
+build = "build.rs"
+
+[build-dependencies]
+bindgen = "^0.21.2"
