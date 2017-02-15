@@ -10,8 +10,15 @@ using namespace fast;
 struct FASTOpaqueImageResampler {
 	ImageResampler::pointer p;
 };
+struct FASTOpaqueProcessObjectPort {
+	ProcessObjectPort p;
+};
 
 inline ImageResampler::pointer unwrap(struct FASTOpaqueImageResampler  *Tys) {
+	return Tys->p;
+}
+
+inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
 	return Tys->p;
 }
 
@@ -31,4 +38,14 @@ void FASTImageResamplerSetOutputSpacing2D(FASTImageResamplerRef ir, float spacin
 
 void FASTImageResamplerSetOutputSpacing3D(FASTImageResamplerRef ir, float spacingX, float spacingY, float spacingZ) {
 	unwrap(ir)->setOutputSpacing(spacingX, spacingY, spacingZ);
+}
+
+void FASTImageResamplerSetInputConnection(FASTImageResamplerRef ir, FASTProcessObjectPortRef p) {
+	unwrap(ir)->setInputConnection(unwrap(p));
+}
+
+FASTProcessObjectPortRef FASTImageResamplerGetOutputPort(FASTImageResamplerRef ir) {
+	struct FASTOpaqueProcessObjectPort *o = new FASTOpaqueProcessObjectPort();
+	o->p = unwrap(ir)->getOutputPort();
+	return o;
 }

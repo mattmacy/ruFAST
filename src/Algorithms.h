@@ -13,7 +13,7 @@ extern "C" {
     void FASTImageResamplerDelete(FASTImageResamplerRef ir);
     void FASTImageResamplerSetOutputSpacing2D(FASTImageResamplerRef ir, float spacingX, float spacingY);
     void FASTImageResamplerSetOutputSpacing3D(FASTImageResamplerRef ir, float spacingX, float spacingY, float spacingZ);
-    void FASTImageResamplerSetInputConnection(FASTProcessObjectPortRef port);
+    void FASTImageResamplerSetInputConnection(FASTImageResamplerRef ir, FASTProcessObjectPortRef port);
 
     FASTProcessObjectPortRef FASTImageResamplerGetOutputPort(FASTImageResamplerRef ir);
 
