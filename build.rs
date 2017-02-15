@@ -1,4 +1,5 @@
 extern crate bindgen;
+extern crate gcc;
 
 use std::env;
 use std::path::PathBuf;
@@ -16,14 +17,8 @@ fn main() {
         // requires a nightly rustc and enabling
         // unstable features.
         .no_unstable_rust()
-        .clang_arg("-x")
-        .clang_arg("c++")
-        .clang_arg("-I/usr/local/fast/include")
-        .clang_arg("-I/usr/include/eigen3")
-        .clang_arg("-std=c++14")
-        // The input header we would like to generate
-        // bindings for.
-        .header("src/wrapper.hpp")
+        .clang_arg("-Isrc")
+        .header("src/wrapper.h")
     // Finish the builder and generate the bindings.
         .generate_comments(false)
         .generate()
@@ -35,4 +30,16 @@ fn main() {
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
+    //gcc::compile_library("libcFAST.a", &["src/Data.cpp", "src/Algorithms.cpp"]);
+    gcc::Config::new()
+        .file("src/Data.cpp")
+        .file("src/Algorithms.cpp")
+        .include("src")
+        .include("/usr/local/fast/include")
+        .include("/usr/include/eigen3")
+        .flag("-std=c++11")
+        .flag("-Wno-deprecated-declarations")
+        .object("/usr/local/fast/lib/libFAST.so")
+        .pic(true)
+        .compile("libcFAST.a");
 }

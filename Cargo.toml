@@ -6,3 +6,4 @@ build = "build.rs"
 
 [build-dependencies]
 bindgen = "^0.21.2"
+gcc = "^0.3"
