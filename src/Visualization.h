@@ -18,9 +18,9 @@ extern "C" {
      * Plane
      */
     typedef struct FASTOpaquePlane *FASTPlaneRef;
-    FASTPlaneRef FastPlaneCoronal(void);
-    FASTPlaneRef FastPlaneSagittal(void);
-    FASTPlaneRef FastPlaneAxial(void);
+    FASTPlaneRef FASTPlaneCoronal(void);
+    FASTPlaneRef FASTPlaneSagittal(void);
+    FASTPlaneRef FASTPlaneAxial(void);
 
     /*
      * View
@@ -39,8 +39,10 @@ extern "C" {
     void FASTSimpleWindowAddRenderer(FASTSimpleWindowRef win, FASTImageRendererRef ir);
     void FASTSimpleWindowSet2DMode(FASTSimpleWindowRef win);
     void FASTSimpleWindowSet3DMode(FASTSimpleWindowRef win);
-    FASTViewRef FASTSimpleWindowGetView(FASTSimpleWindowRef win);
+    void FASTSimpleWindowStart(FASTSimpleWindowRef win);
     void FASTSimpleWindowSetTimeout(FASTSimpleWindowRef win, unsigned int milliseconds);
+    FASTViewRef FASTSimpleWindowGetView(FASTSimpleWindowRef win);
+
 #ifdef __cplusplus
 }
 #endif

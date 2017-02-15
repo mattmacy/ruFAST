@@ -32,11 +32,17 @@ fn main() {
         .expect("Couldn't write bindings!");
     //gcc::compile_library("libcFAST.a", &["src/Data.cpp", "src/Algorithms.cpp"]);
     gcc::Config::new()
-        .file("src/Data.cpp")
         .file("src/Algorithms.cpp")
+        .file("src/Data.cpp")
+        .file("src/Importers.cpp")
+        .file("src/Visualization.cpp")
         .include("src")
         .include("/usr/local/fast/include")
         .include("/usr/include/eigen3")
+        .include("/usr/include/x86_64-linux-gnu/qt5/QtWidgets/")
+        .include("/usr/include/x86_64-linux-gnu/qt5/QtCore")
+        .include("/usr/include/x86_64-linux-gnu/qt5/QtGui")
+        .include("/usr/include/x86_64-linux-gnu/qt5")
         .flag("-std=c++11")
         .flag("-Wno-deprecated-declarations")
         .object("/usr/local/fast/lib/libFAST.so")
