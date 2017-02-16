@@ -33,7 +33,7 @@ void FASTImageImporterDelete(FASTImageImporterRef ir) {
 	delete ir;
 }
 
-void FASTImageImporterSetFilename(FASTImageImporterRef ir, const unsigned char *filename) {
+void FASTImageImporterSetFilename(FASTImageImporterRef ir, const char *filename) {
 	unwrap(ir)->setFilename(std::string(reinterpret_cast<const char *>(filename)));
 }
 
