@@ -26,7 +26,6 @@ extern "C" {
      * View
      */
     typedef struct FASTOpaqueView *FASTViewRef;
-    void FASTViewDelete(FASTViewRef view);
     void FASTViewSetViewingPlane(FASTViewRef view, FASTPlaneRef plane);
 
     /*

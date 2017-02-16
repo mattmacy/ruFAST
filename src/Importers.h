@@ -9,7 +9,7 @@ extern "C" {
     typedef struct FASTOpaqueImageImporter *FASTImageImporterRef;
     FASTImageImporterRef FASTImageImporterNew(void);
     void FASTImageImporterDelete(FASTImageImporterRef);
-    void FASTImageImporterSetFilename(FASTImageImporterRef ir, char *filename);
+    void FASTImageImporterSetFilename(FASTImageImporterRef ir, const unsigned char *filename);
 
     FASTProcessObjectPortRef FASTImageImporterGetOutputPort(FASTImageImporterRef);
 #ifdef __cplusplus

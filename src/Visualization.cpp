@@ -38,6 +38,10 @@ inline FASTPlaneRef wrap(const Plane *Tys) {
   return reinterpret_cast<FASTPlaneRef>(const_cast<Plane*>(Tys));
 }
 
+inline Plane *unwrap(const FASTPlaneRef Tys) {
+	return reinterpret_cast<Plane *>(const_cast<FASTPlaneRef>(Tys));
+}
+
 FASTPlaneRef FASTPlaneSagittal() {
 	return wrap(new Plane(Vector3f(1,0,0)));
 }
@@ -61,6 +65,14 @@ inline FASTViewRef wrap(const View *Tys) {
 inline View *unwrap(FASTViewRef Tys) {
   return reinterpret_cast<View *>(Tys);
 }
+
+
+void FASTViewSetViewingPlane(FASTViewRef view, FASTPlaneRef plane)
+{
+	unwrap(view)->setViewingPlane(*unwrap(plane));
+}
+
+
 
 inline SimpleWindow::pointer unwrap(struct FASTOpaqueSimpleWindow  *Tys) {
 	return Tys->p;
@@ -100,6 +112,6 @@ void FASTSimpleWindowStart(FASTSimpleWindowRef win) {
 	unwrap(win)->start();
 }
 
-void FASTSimpleWindowDelete(FASTViewRef view) {
-	delete unwrap(view);
-}
+
+
+
