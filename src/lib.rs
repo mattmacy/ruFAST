@@ -5,6 +5,9 @@
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
+
+use std::ffi::CString;
+
 pub struct ImageImporter {
     ir: FASTImageImporterRef,
 }
@@ -17,8 +20,8 @@ impl ImageImporter {
     pub fn new() -> Self {
         unsafe { ImageImporter { ir : FASTImageImporterNew() } }
     }
-    pub fn setFilename(&mut self, name: &str) {
-        unsafe { FASTImageImporterSetFilename(self.ir, name.as_ptr()); };
+    pub fn setFilename(&mut self, name: &str)  {
+        unsafe { FASTImageImporterSetFilename(self.ir, CString::new(name).unwrap().as_bytes_with_nul().as_ptr() as *const i8) };
     }
     pub fn getOutputPort(&mut self) -> ProcessObjectPort {
         unsafe { ProcessObjectPort {port : FASTImageImporterGetOutputPort(self.ir)} }
@@ -137,10 +140,10 @@ impl Plane {
     }
 }
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[test]
     fn image_resampler_test() {
         let mut importer = ImageImporter::new();
