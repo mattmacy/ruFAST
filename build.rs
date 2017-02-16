@@ -7,7 +7,14 @@ use std::path::PathBuf;
 fn main() {
     // Tell cargo to tell rustc to link the system bzip2
     // shared library.
+    println!("cargo:rustc-link-search=native=/usr/local/fast/lib");
     println!("cargo:rustc-link-lib=FAST");
+    println!("cargo:rustc-link-lib=GLEW");
+    println!("cargo:rustc-link-lib=igtlutil");
+    println!("cargo:rustc-link-lib=OpenIGTLink");
+    println!("cargo:rustc-link-lib=Qt5Core");
+    println!("cargo:rustc-link-lib=Qt5Gui");
+    println!("cargo:rustc-link-lib=Qt5Widgets");
 
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
