@@ -1,0 +1,8 @@
+## FAST Configuration file
+#TestDataPath = /path/to/data/
+KernelSourcePath = ./kernel/source/FAST/
+KernelBinaryPath = ./kernel/binary/
+
+
+
+
