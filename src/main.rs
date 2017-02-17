@@ -50,7 +50,7 @@ fn lung_segmentation_test() {
     extraction.setInputConnection(&mut segmentation.getOutputPort());
 
     let mut extraction2 = SurfaceExtraction::new();
-    extraction.setInputConnection(&mut segmentation.getOutputPortId(1));
+    extraction2.setInputConnection(&mut segmentation.getOutputPortId(1));
 
     let mut mesh_renderer = MeshRenderer::new();
     mesh_renderer.addInputConnection(&mut extraction.getOutputPort(), FASTColor::FASTGreen, 0.6);
