@@ -3,6 +3,7 @@
 #include "FAST/Algorithms/MeshToSegmentation/MeshToSegmentation.hpp"
 #include "FAST/Algorithms/AirwaySegmentation/AirwaySegmentation.hpp"
 #include "FAST/Algorithms/SurfaceExtraction/SurfaceExtraction.hpp"
+#include "FAST/Algorithms/LungSegmentation/LungSegmentation.hpp"
 
 #include "Algorithms.h"
 
@@ -47,3 +48,12 @@ void FASTSurfaceExtractionSetThreshold(FASTSurfaceExtractionRef ir, float thresh
 	unwrap(ir)->setThreshold(threshold);
 }
 
+struct FASTOpaqueLungSegmentation {
+	LungSegmentation::pointer p;
+};
+
+FASTLungSegmentationRef FASTLungSegmentationNew() {
+	struct FASTOpaqueLungSegmentation *o = new FASTOpaqueLungSegmentation();
+	o->p = LungSegmentation::New();
+	return o;
+}
