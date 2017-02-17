@@ -8,35 +8,40 @@ include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 use std::ffi::CString;
 
-pub struct ImageImporter {
-    ir: FASTImageImporterRef,
+pub struct ImageFileImporter {
+    ir: FASTImageFileImporterRef,
 }
 
 pub struct ProcessObjectPort {
     port: FASTProcessObjectPortRef,
 }
 
-impl ImageImporter {
-    pub fn new() -> Self {
-        unsafe { ImageImporter { ir : FASTImageImporterNew() } }
-    }
-    pub fn setFilename(&mut self, name: &str)  {
-        unsafe { FASTImageImporterSetFilename(self.ir, CString::new(name).unwrap().as_bytes_with_nul().as_ptr() as *const i8) };
-    }
-    pub fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTImageImporterGetOutputPort(self.ir)} }
-    }
-}
-
-impl Drop for ImageImporter {
-    fn drop(&mut self) {
-        unsafe { FASTImageImporterDelete(self.ir) };
-    }
+pub trait Algorithm {
+    fn getOutputPort(&mut self) -> ProcessObjectPort;
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort);
 }
 
 pub trait Renderer {
-    fn getOutputPort(&mut self) -> ProcessObjectPort;
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort);
+    fn getIr(&mut self) -> FASTRendererRef;
+}
+
+impl ImageFileImporter {
+    pub fn new() -> Self {
+        unsafe { ImageFileImporter { ir : FASTImageFileImporterNew() } }
+    }
+    pub fn setFilename(&mut self, name: &str)  {
+        unsafe { FASTImageFileImporterSetFilename(self.ir, CString::new(name).unwrap().as_bytes_with_nul().as_ptr() as *const i8) };
+    }
+    pub fn getOutputPort(&mut self) -> ProcessObjectPort {
+        unsafe { ProcessObjectPort {port : FASTImageFileImporterGetOutputPort(self.ir)} }
+    }
+}
+
+impl Drop for ImageFileImporter {
+    fn drop(&mut self) {
+        unsafe { FASTImageFileImporterDelete(self.ir) };
+    }
 }
 
 pub struct ImageResampler {
@@ -61,7 +66,7 @@ impl Drop for ImageResampler {
     }
 }
 
-impl Renderer for ImageResampler {
+impl Algorithm for ImageResampler {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
         unsafe { ProcessObjectPort {port : FASTImageResamplerGetOutputPort(self.ir)} }
     }
@@ -89,7 +94,7 @@ impl Drop for SurfaceExtraction {
     }
 }
 
-impl Renderer for SurfaceExtraction {
+impl Algorithm for SurfaceExtraction {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
         unsafe { ProcessObjectPort {port : FASTSurfaceExtractionGetOutputPort(self.ir)} }
     }
@@ -98,56 +103,59 @@ impl Renderer for SurfaceExtraction {
     }
 }
 
-
 pub struct ImageRenderer {
-    ir: FASTImageRendererRef,
+    ir: FASTRendererRef,
 }
-
-pub struct MeshRenderer {
-    ir: FASTImageRendererRef,
-}
-
 impl ImageRenderer {
     pub fn new() -> Self {
         unsafe { ImageRenderer { ir : FASTImageRendererNew() } }
     }
-    pub fn addInputConnection(&mut self, port : &mut ProcessObjectPort) {
-        unsafe { FASTImageRendererAddInputConnection(self.ir, port.port); };
+}
+impl Renderer for ImageRenderer {
+    fn getIr(&mut self) -> FASTRendererRef {
+        self.ir
+    }
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
+        unsafe { FASTRendererSetInputConnection(self.ir, port.port); };
     }
 }
-
 impl Drop for ImageRenderer {
     fn drop(&mut self) {
-        unsafe { FASTImageRendererDelete(self.ir) };
+        unsafe { FASTRendererDelete(self.ir) };
     }
 }
 
-
+pub struct MeshRenderer {
+    ir: FASTRendererRef,
+}
 impl MeshRenderer {
     pub fn new() -> Self {
-        unsafe { MeshRenderer { ir : FASTImageRendererNew() } }
-    }
-    pub fn addInputConnection(&mut self, port : &mut ProcessObjectPort) {
-        unsafe { FASTImageRendererAddInputConnection(self.ir, port.port); };
+        unsafe { MeshRenderer { ir : FASTMeshRendererNew() } }
     }
 }
-
+impl Renderer for MeshRenderer {
+    fn getIr(&mut self) -> FASTRendererRef {
+        self.ir
+    }
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
+        unsafe { FASTRendererSetInputConnection(self.ir, port.port); };
+    }
+}
 impl Drop for MeshRenderer {
     fn drop(&mut self) {
-        unsafe { FASTImageRendererDelete(self.ir) };
+        unsafe { FASTRendererDelete(self.ir) };
     }
 }
 
 pub struct SimpleWindow {
     ir: FASTSimpleWindowRef,
 }
-
 impl SimpleWindow {
     pub fn new() -> Self {
         unsafe { SimpleWindow { ir : FASTSimpleWindowNew() } }
     }
-    pub fn addRenderer(&mut self, renderer: ImageRenderer) {
-        unsafe { FASTSimpleWindowAddRenderer(self.ir, renderer.ir); };
+    pub fn addRenderer(&mut self, renderer: &mut Renderer) {
+        unsafe { FASTSimpleWindowAddRenderer(self.ir, renderer.getIr()); };
     }
     pub fn set2DMode(&mut self) {
         unsafe { FASTSimpleWindowSet2DMode(self.ir); };
@@ -162,7 +170,6 @@ impl SimpleWindow {
         unsafe { FASTSimpleWindowStart(self.ir); };
     }
 }
-
 
 impl Drop for SimpleWindow {
     fn drop(&mut self) {
@@ -201,23 +208,20 @@ mod tests {
     use super::*;
 
     #[test]
-    fn image_resampler_test() {
-        let mut importer = ImageImporter::new();
+    fn surface_extraction_test() {
+        let mut importer = ImageFileImporter::new();
         importer.setFilename("resources/CT/CT-Abdomen.mhd");
 
-        let mut resampler = ImageResampler::new();
-        resampler.setOutputSpacing3D(1.0, 1.0, 1.0);
-        resampler.setInputConnection(&mut importer.getOutputPort());
+        let mut extraction = SurfaceExtraction::new();
+        extraction.setInputConnection(&mut importer.getOutputPort());
+        extraction.setThreshold(300.0);
 
-        let mut renderer = ImageRenderer::new();
-        renderer.addInputConnection(&mut resampler.getOutputPort());
+        let mut surface_renderer = MeshRenderer::new();
+        surfaceRenderer.setInputConnection(&mut extraction.getOutputPort());
 
         let mut window = SimpleWindow::new();
-        window.addRenderer(renderer);
-        window.set2DMode();
-        window.getView().setViewingPlane(Plane::coronal());
-        window.setTimeout(500);
+        window.addRenderer(&mut surfaceRenderer);
+        window.setTimeout(5*1000);
         window.start();
-        println!("finished test!");
     }
 }

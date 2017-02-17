@@ -7,18 +7,20 @@
 #include "Algorithms.h"
 
 using namespace fast;
-struct FASTOpaqueImageResampler {
-	ImageResampler::pointer p;
-};
 struct FASTOpaqueProcessObjectPort {
 	ProcessObjectPort p;
 };
 
-inline ImageResampler::pointer unwrap(struct FASTOpaqueImageResampler  *Tys) {
+inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
 	return Tys->p;
 }
 
-inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
+
+struct FASTOpaqueImageResampler {
+	ImageResampler::pointer p;
+};
+
+inline ImageResampler::pointer unwrap(struct FASTOpaqueImageResampler  *Tys) {
 	return Tys->p;
 }
 
@@ -45,6 +47,39 @@ void FASTImageResamplerSetInputConnection(FASTImageResamplerRef ir, FASTProcessO
 }
 
 FASTProcessObjectPortRef FASTImageResamplerGetOutputPort(FASTImageResamplerRef ir) {
+	struct FASTOpaqueProcessObjectPort *o = new FASTOpaqueProcessObjectPort();
+	o->p = unwrap(ir)->getOutputPort();
+	return o;
+}
+
+
+struct FASTOpaqueSurfaceExtraction {
+	SurfaceExtraction::pointer p;
+};
+
+inline SurfaceExtraction::pointer unwrap(struct FASTOpaqueSurfaceExtraction  *Tys) {
+	return Tys->p;
+}
+
+FASTSurfaceExtractionRef FASTSurfaceExtractionNew() {
+	struct FASTOpaqueSurfaceExtraction *o = new FASTOpaqueSurfaceExtraction();
+	o->p = SurfaceExtraction::New();
+	return o;
+}
+
+void FASTSurfaceExtractionDelete(FASTSurfaceExtractionRef ir) {
+	delete ir;
+}
+
+void FASTSurfaceExtractionSetThreshold(FASTSurfaceExtractionRef ir, float threshold) {
+	unwrap(ir)->setThreshold(threshold);
+}
+
+void FASTSurfaceExtractionSetInputConnection(FASTSurfaceExtractionRef ir, FASTProcessObjectPortRef p) {
+	unwrap(ir)->setInputConnection(unwrap(p));
+}
+
+FASTProcessObjectPortRef FASTSurfaceExtractionGetOutputPort(FASTSurfaceExtractionRef ir) {
 	struct FASTOpaqueProcessObjectPort *o = new FASTOpaqueProcessObjectPort();
 	o->p = unwrap(ir)->getOutputPort();
 	return o;

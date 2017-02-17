@@ -1,18 +1,19 @@
 #include "FAST/Visualization/SimpleWindow.hpp"
 #include "FAST/Visualization/ImageRenderer/ImageRenderer.hpp"
+#include "FAST/Visualization/MeshRenderer/MeshRenderer.hpp"
 
 #include "Visualization.h"
 using namespace fast;
 
-struct FASTOpaqueImageRenderer {
-	ImageRenderer::pointer p;
+struct FASTOpaqueRenderer {
+	Renderer::pointer p;
 };
 
 struct FASTOpaqueProcessObjectPort {
 	ProcessObjectPort p;
 };
 
-inline ImageRenderer::pointer unwrap(struct FASTOpaqueImageRenderer  *Tys) {
+inline Renderer::pointer unwrap(struct FASTOpaqueRenderer  *Tys) {
 	return Tys->p;
 }
 
@@ -20,18 +21,24 @@ inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
 	return Tys->p;
 }
 
-FASTImageRendererRef FASTImageRendererNew() {
-	struct FASTOpaqueImageRenderer *o = new FASTOpaqueImageRenderer();
+FASTRendererRef FASTImageRendererNew() {
+	struct FASTOpaqueRenderer *o = new FASTOpaqueRenderer();
 	o->p = ImageRenderer::New();
 	return o;
 }
 
-void FASTImageRendererDelete(FASTImageRendererRef ir) {
+FASTRendererRef FASTMeshRendererNew() {
+	struct FASTOpaqueRenderer *o = new FASTOpaqueRenderer();
+	o->p = MeshRenderer::New();
+	return o;
+}
+
+void FASTRendererDelete(FASTRendererRef ir) {
 	delete ir;
 }
 
-void FASTImageRendererAddInputConnection(FASTImageRendererRef ir, FASTProcessObjectPortRef p) {
-	unwrap(ir)->addInputConnection(unwrap(p));
+void FASTRendererSetInputConnection(FASTRendererRef ir, FASTProcessObjectPortRef p) {
+	unwrap(ir)->setInputConnection(unwrap(p));
 }
 
 inline FASTPlaneRef wrap(const Plane *Tys) {
@@ -72,8 +79,6 @@ void FASTViewSetViewingPlane(FASTViewRef view, FASTPlaneRef plane)
 	unwrap(view)->setViewingPlane(*unwrap(plane));
 }
 
-
-
 inline SimpleWindow::pointer unwrap(struct FASTOpaqueSimpleWindow  *Tys) {
 	return Tys->p;
 }
@@ -88,7 +93,7 @@ void FASTSimpleWindowDelete(FASTSimpleWindowRef win) {
 	delete win;
 }
 
-void  FASTSimpleWindowAddRenderer(FASTSimpleWindowRef win, FASTImageRendererRef ir) {
+void  FASTSimpleWindowAddRenderer(FASTSimpleWindowRef win, FASTRendererRef ir) {
 	unwrap(win)->addRenderer(unwrap(ir));
 }
 

@@ -9,13 +9,13 @@
 #include "Importers.h"
 using namespace fast;
 
-struct FASTOpaqueImageImporter {
+struct FASTOpaqueImageFileImporter {
 	ImageFileImporter::pointer p;
 };
 struct FASTOpaqueProcessObjectPort {
 	ProcessObjectPort p;
 };
-inline ImageFileImporter::pointer unwrap(struct FASTOpaqueImageImporter  *Tys) {
+inline ImageFileImporter::pointer unwrap(struct FASTOpaqueImageFileImporter  *Tys) {
 	return Tys->p;
 }
 
@@ -23,21 +23,21 @@ inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
 	return Tys->p;
 }
 
-FASTImageImporterRef FASTImageImporterNew() {
-	struct FASTOpaqueImageImporter *o = new FASTOpaqueImageImporter();
+FASTImageFileImporterRef FASTImageFileImporterNew() {
+	struct FASTOpaqueImageFileImporter *o = new FASTOpaqueImageFileImporter();
 	o->p = ImageFileImporter::New();
 	return o;
 }
 
-void FASTImageImporterDelete(FASTImageImporterRef ir) {
+void FASTImageFileImporterDelete(FASTImageFileImporterRef ir) {
 	delete ir;
 }
 
-void FASTImageImporterSetFilename(FASTImageImporterRef ir, const char *filename) {
+void FASTImageFileImporterSetFilename(FASTImageFileImporterRef ir, const char *filename) {
 	unwrap(ir)->setFilename(std::string(reinterpret_cast<const char *>(filename)));
 }
 
-FASTProcessObjectPortRef FASTImageImporterGetOutputPort(FASTImageImporterRef ir) {
+FASTProcessObjectPortRef FASTImageFileImporterGetOutputPort(FASTImageFileImporterRef ir) {
 	struct FASTOpaqueProcessObjectPort *o = new FASTOpaqueProcessObjectPort();
 	o->p = unwrap(ir)->getOutputPort();
 	return o;

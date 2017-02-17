@@ -6,12 +6,12 @@
 extern "C" {
 #endif    
 
-    typedef struct FASTOpaqueImageImporter *FASTImageImporterRef;
-    FASTImageImporterRef FASTImageImporterNew(void);
-    void FASTImageImporterDelete(FASTImageImporterRef);
-    void FASTImageImporterSetFilename(FASTImageImporterRef ir, const char *filename);
+    typedef struct FASTOpaqueImageFileImporter *FASTImageFileImporterRef;
+    FASTImageFileImporterRef FASTImageFileImporterNew(void);
+    void FASTImageFileImporterDelete(FASTImageFileImporterRef);
+    void FASTImageFileImporterSetFilename(FASTImageFileImporterRef ir, const char *filename);
 
-    FASTProcessObjectPortRef FASTImageImporterGetOutputPort(FASTImageImporterRef);
+    FASTProcessObjectPortRef FASTImageFileImporterGetOutputPort(FASTImageFileImporterRef);
 #ifdef __cplusplus
 }
 #endif
