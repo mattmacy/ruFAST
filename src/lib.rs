@@ -1,4 +1,4 @@
-
+#![feature(concat_idents)]
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
@@ -20,6 +20,24 @@ impl Drop for ProcessObjectPort {
     fn drop(&mut self) {
         unsafe { FASTProcessObjectPortDelete(self.port) };
     }
+}
+
+macro_rules! impl_process_object {
+    ($name:ident) => (
+        impl ProcessObject for $name {
+            fn new() -> Self {
+                unsafe { $name { ir : concat_idents!(FAST, $name, New)() } }
+            }
+            fn getPOR(&mut self) -> FASTProcessObjectRef {
+                self.ir as FASTProcessObjectRef
+            }
+        }
+        impl Drop for $name {
+            fn drop(&mut self) {
+                unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
+            }
+        }
+    )
 }
 
 pub trait ProcessObject {
@@ -45,21 +63,8 @@ impl ImageFileImporter {
         unsafe { FASTImageFileImporterSetFilename(self.ir, CString::new(name).unwrap().as_bytes_with_nul().as_ptr() as *const i8) };
     }
 }
+impl_process_object!(ImageFileImporter);
 
-impl ProcessObject for ImageFileImporter{
-    fn new() -> Self {
-        unsafe { ImageFileImporter { ir : FASTImageFileImporterNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-
-impl Drop for ImageFileImporter {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
 
 pub struct ImageResampler {
     ir: FASTImageResamplerRef,
@@ -73,21 +78,7 @@ impl ImageResampler {
         unsafe { FASTImageResamplerSetOutputSpacing3D(self.ir, spaceX, spaceY, spaceZ); };
     }
 }
-impl ProcessObject for ImageResampler {
-    fn new() -> Self {
-        unsafe { ImageResampler { ir : FASTImageResamplerNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-
-impl Drop for ImageResampler {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
-
+impl_process_object!(ImageResampler);
 
 pub struct SurfaceExtraction {
     ir: FASTSurfaceExtractionRef,
@@ -98,39 +89,12 @@ impl SurfaceExtraction {
         unsafe { FASTSurfaceExtractionSetThreshold(self.ir, threshold); };
     }
 }
-impl ProcessObject for SurfaceExtraction {
-    fn new() -> Self {
-        unsafe { SurfaceExtraction { ir : FASTSurfaceExtractionNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-
-impl Drop for SurfaceExtraction {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
+impl_process_object!(SurfaceExtraction);
 
 pub struct LungSegmentation {
     ir: FASTLungSegmentationRef,
 }
-
-impl ProcessObject for LungSegmentation {
-    fn new() -> Self {
-        unsafe { LungSegmentation { ir : FASTLungSegmentationNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-
-impl Drop for LungSegmentation {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
+impl_process_object!(LungSegmentation);
 
 
 pub struct Dilation {
@@ -142,21 +106,7 @@ impl Dilation {
         unsafe { FASTDilationSetStructuringElementSize(self.ir, size) };
     }
 }
-
-impl ProcessObject for Dilation {
-    fn new() -> Self {
-        unsafe { Dilation { ir : FASTDilationNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-impl Drop for Dilation {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
-
+impl_process_object!(Dilation);
 
 pub struct Erosion {
     ir: FASTErosionRef,
@@ -167,38 +117,14 @@ impl Erosion {
         unsafe { FASTErosionSetStructuringElementSize(self.ir, size) };
     }
 }
-
-impl ProcessObject for Erosion {
-    fn new() -> Self {
-        unsafe { Erosion { ir : FASTErosionNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-impl Drop for Erosion {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
+impl_process_object!(Erosion);
 
 
 pub struct ImageRenderer {
     ir: FASTImageRendererRef,
 }
-impl ProcessObject for ImageRenderer {
-    fn new() -> Self {
-        unsafe { ImageRenderer { ir : FASTImageRendererNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-impl Drop for ImageRenderer {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
+impl_process_object!(ImageRenderer);
+
 impl Renderer for ImageRenderer {
     fn getIr(&mut self) -> FASTRendererRef {
         self.ir  as FASTRendererRef
@@ -213,19 +139,8 @@ impl MeshRenderer {
         unsafe { FASTMeshRendererAddInputConnection(self.ir, port.port, color, opacity); };
     }
 }
-impl ProcessObject for MeshRenderer {
-    fn new() -> Self {
-        unsafe { MeshRenderer { ir : FASTMeshRendererNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-impl Drop for MeshRenderer {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
+impl_process_object!(MeshRenderer);
+
 impl Renderer for MeshRenderer {
     fn getIr(&mut self) -> FASTRendererRef {
         self.ir as FASTRendererRef
@@ -252,19 +167,8 @@ impl SimpleWindow {
         unsafe { FASTSimpleWindowStart(self.ir); };
     }
 }
-impl ProcessObject for SimpleWindow {
-    fn new() -> Self {
-        unsafe { SimpleWindow { ir : FASTSimpleWindowNew() } }
-    }
-    fn getPOR(&mut self) -> FASTProcessObjectRef {
-        self.ir as FASTProcessObjectRef
-    }
-}
-impl Drop for SimpleWindow {
-    fn drop(&mut self) {
-        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
-    }
-}
+impl_process_object!(SimpleWindow);
+
 
 pub struct View {
     ir: FASTViewRef,
@@ -306,10 +210,10 @@ mod tests {
         extraction.setThreshold(300.0);
 
         let mut surface_renderer = MeshRenderer::new();
-        surfaceRenderer.setInputConnection(&mut extraction.getOutputPort());
+        surface_renderer.setInputConnection(&mut extraction.getOutputPort());
 
         let mut window = SimpleWindow::new();
-        window.addRenderer(&mut surfaceRenderer);
+        window.addRenderer(&mut surface_renderer);
         window.setTimeout(5*1000);
         window.start();
     }
