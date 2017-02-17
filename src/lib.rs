@@ -34,6 +34,11 @@ impl Drop for ImageImporter {
     }
 }
 
+trait Renderer {
+    fn getOutputPort(&mut self) -> ProcessObjectPort;
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort);
+}
+
 pub struct ImageResampler {
     ir: FASTImageResamplerRef,
 }
@@ -42,17 +47,11 @@ impl ImageResampler {
     pub fn new() -> Self {
         unsafe { ImageResampler { ir : FASTImageResamplerNew() } }
     }
-    pub fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTImageResamplerGetOutputPort(self.ir)} }
-    }
     pub fn setOutputSpacing2D(&mut self, spaceX: f32, spaceY: f32) {
         unsafe { FASTImageResamplerSetOutputSpacing2D(self.ir, spaceX, spaceY); };
     }
     pub fn setOutputSpacing3D(&mut self, spaceX: f32, spaceY: f32, spaceZ: f32) {
         unsafe { FASTImageResamplerSetOutputSpacing3D(self.ir, spaceX, spaceY, spaceZ); };
-    }
-    pub fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
-        unsafe { FASTImageResamplerSetInputConnection(self.ir, port.port); };
     }
 }
 
@@ -62,8 +61,49 @@ impl Drop for ImageResampler {
     }
 }
 
+impl Renderer for ImageResampler {
+    fn getOutputPort(&mut self) -> ProcessObjectPort {
+        unsafe { ProcessObjectPort {port : FASTImageResamplerGetOutputPort(self.ir)} }
+    }
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
+        unsafe { FASTImageResamplerSetInputConnection(self.ir, port.port); };
+    }
+}
+
+pub struct SurfaceExtraction {
+    ir: FASTSurfaceExtractionRef,
+}
+
+impl SurfaceExtraction {
+    pub fn new() -> Self {
+        unsafe { SurfaceExtraction { ir : FASTSurfaceExtractionNew() } }
+    }
+    pub fn setThreshold(&mut self, threshold: f32) {
+        unsafe { FASTSurfaceExtractionSetThreshold(self.ir, threshold); };
+    }
+}
+
+impl Drop for SurfaceExtraction {
+    fn drop(&mut self) {
+        unsafe { FASTSurfaceExtractionDelete(self.ir) };
+    }
+}
+
+impl Renderer for SurfaceExtraction {
+    fn getOutputPort(&mut self) -> ProcessObjectPort {
+        unsafe { ProcessObjectPort {port : FASTSurfaceExtractionGetOutputPort(self.ir)} }
+    }
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
+        unsafe { FASTSurfaceExtractionSetInputConnection(self.ir, port.port); };
+    }
+}
+
 
 pub struct ImageRenderer {
+    ir: FASTImageRendererRef,
+}
+
+pub struct MeshRenderer {
     ir: FASTImageRendererRef,
 }
 
@@ -82,6 +122,21 @@ impl Drop for ImageRenderer {
     }
 }
 
+
+impl MeshRenderer {
+    pub fn new() -> Self {
+        unsafe { MeshRenderer { ir : FASTImageRendererNew() } }
+    }
+    pub fn addInputConnection(&mut self, port : &mut ProcessObjectPort) {
+        unsafe { FASTImageRendererAddInputConnection(self.ir, port.port); };
+    }
+}
+
+impl Drop for MeshRenderer {
+    fn drop(&mut self) {
+        unsafe { FASTImageRendererDelete(self.ir) };
+    }
+}
 
 pub struct SimpleWindow {
     ir: FASTSimpleWindowRef,
@@ -144,6 +199,7 @@ impl Plane {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn image_resampler_test() {
         let mut importer = ImageImporter::new();
