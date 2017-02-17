@@ -20,6 +20,10 @@ extern "C" {
     typedef struct FASTOpaqueView *FASTViewRef;
     FAST_REF_DECL(ImageRenderer)
     FAST_REF_DECL(MeshRenderer)
+    FAST_REF_DECL(PointRenderer)
+    FAST_REF_DECL(SliceRenderer)
+    FAST_REF_DECL(SegmentationRenderer)
+
     FAST_REF_DECL(SimpleWindow)
     /*
      * Renderer

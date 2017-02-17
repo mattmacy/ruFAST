@@ -1,12 +1,18 @@
 #include "FAST/Visualization/SimpleWindow.hpp"
 #include "FAST/Visualization/ImageRenderer/ImageRenderer.hpp"
 #include "FAST/Visualization/MeshRenderer/MeshRenderer.hpp"
+#include "FAST/Visualization/SliceRenderer/SliceRenderer.hpp"
+#include "FAST/Visualization/PointRenderer/PointRenderer.hpp"
+#include "FAST/Visualization/SegmentationRenderer/SegmentationRenderer.hpp"
 
 #include "Visualization.h"
 using namespace fast;
 
 FAST_REF_IMPL(MeshRenderer)
 FAST_REF_IMPL(ImageRenderer)
+FAST_REF_IMPL(SliceRenderer)
+FAST_REF_IMPL(PointRenderer)
+FAST_REF_IMPL(SegmentationRenderer)
 FAST_REF_IMPL(SimpleWindow)
 
 struct FASTOpaqueRenderer {

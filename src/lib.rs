@@ -61,21 +61,29 @@ impl_process_object!(Dilation);
 impl_process_object!(Erosion);
 impl_process_object!(ImageRenderer);
 impl_process_object!(MeshRenderer);
+impl_process_object!(SliceRenderer);
+impl_process_object!(PointRenderer);
+impl_process_object!(SegmentationRenderer);
+
 impl_process_object!(SimpleWindow);
 
 pub trait Renderer {
     fn getIr(&mut self) -> FASTRendererRef;
 }
-impl Renderer for ImageRenderer {
-    fn getIr(&mut self) -> FASTRendererRef {
-        self.ir  as FASTRendererRef
-    }
+macro_rules! impl_renderer {
+    ($name:ident) => (
+        impl Renderer for $name {
+            fn getIr(&mut self) -> FASTRendererRef {
+                self.ir  as FASTRendererRef
+            }
+        }
+    )
 }
-impl Renderer for MeshRenderer {
-    fn getIr(&mut self) -> FASTRendererRef {
-        self.ir as FASTRendererRef
-    }
-}
+impl_renderer!(MeshRenderer);
+impl_renderer!(ImageRenderer);
+impl_renderer!(SliceRenderer);
+impl_renderer!(PointRenderer);
+impl_renderer!(SegmentationRenderer);
 
 impl ImageFileImporter {
     pub fn setFilename(&mut self, name: &str)  {
@@ -158,7 +166,6 @@ impl Plane {
         unsafe { Plane { ir: FASTPlaneAxial() } }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
