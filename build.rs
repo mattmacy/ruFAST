@@ -27,7 +27,6 @@ fn main() {
         .clang_arg("-Isrc")
         .header("src/wrapper.h")
     // Finish the builder and generate the bindings.
-        .generate_comments(false)
         .generate()
         // Unwrap the Result and panic on failure.
         .expect("Unable to generate bindings");
