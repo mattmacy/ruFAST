@@ -38,7 +38,32 @@ fn surface_extraction_test() {
     window.setTimeout(5*1000);
     window.start();
 }
+
+fn lung_segmentation_test() {
+    let mut importer = ImageFileImporter::new();
+    importer.setFilename("resources/CT/CT-Thorax.mhd");
+
+    let mut segmentation = LungSegmentation::new();
+    segmentation.setInputConnection(&mut importer.getOutputPort());
+
+    let mut extraction = SurfaceExtraction::new();
+    extraction.setInputConnection(&mut segmentation.getOutputPort());
+
+    let mut extraction2 = SurfaceExtraction::new();
+    extraction.setInputConnection(&mut segmentation.getOutputPortId(1));
+
+    let mut mesh_renderer = MeshRenderer::new();
+    mesh_renderer.addInputConnection(&mut extraction.getOutputPort(), FASTColor::FASTGreen, 0.6);
+    mesh_renderer.addInputConnection(&mut extraction2.getOutputPort(), FASTColor::FASTRed, 1.0);
+
+    let mut window = SimpleWindow::new();
+    window.addRenderer(&mut mesh_renderer);
+    window.setTimeout(5*1000);
+    window.start();
+}
+
 fn main() {
     image_resampler_test();
     surface_extraction_test();
+    lung_segmentation_test();
 }
