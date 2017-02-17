@@ -4,6 +4,8 @@
 #include "FAST/Algorithms/AirwaySegmentation/AirwaySegmentation.hpp"
 #include "FAST/Algorithms/SurfaceExtraction/SurfaceExtraction.hpp"
 #include "FAST/Algorithms/LungSegmentation/LungSegmentation.hpp"
+#include "FAST/Algorithms/Morphology/Dilation.hpp"
+#include "FAST/Algorithms/Morphology/Erosion.hpp"
 
 #include "Algorithms.h"
 
@@ -56,4 +58,30 @@ FASTLungSegmentationRef FASTLungSegmentationNew() {
 	struct FASTOpaqueLungSegmentation *o = new FASTOpaqueLungSegmentation();
 	o->p = LungSegmentation::New();
 	return o;
+}
+
+struct FASTOpaqueDilation {
+	Dilation::pointer p;
+};
+
+FASTDilationRef FASTDilationNew() {
+	struct FASTOpaqueDilation *o = new FASTOpaqueDilation();
+	o->p = Dilation::New();
+	return o;
+}
+void FASTDilationSetStructuringElementSize(FASTDilationRef ir, int size) {
+	ir->p->setStructuringElementSize(size);
+}
+
+struct FASTOpaqueErosion {
+	Erosion::pointer p;
+};
+
+FASTErosionRef FASTErosionNew() {
+	struct FASTOpaqueErosion *o = new FASTOpaqueErosion();
+	o->p = Erosion::New();
+	return o;
+}
+void FASTErosionSetStructuringElementSize(FASTErosionRef ir, int size) {
+	ir->p->setStructuringElementSize(size);
 }

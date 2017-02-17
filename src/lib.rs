@@ -16,6 +16,12 @@ pub struct ProcessObjectPort {
     port: FASTProcessObjectPortRef,
 }
 
+impl Drop for ProcessObjectPort {
+    fn drop(&mut self) {
+        unsafe { FASTProcessObjectPortDelete(self.port) };
+    }
+}
+
 pub trait ProcessObject {
     fn getOutputPort(&mut self) -> ProcessObjectPort;
     fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort;
@@ -136,6 +142,68 @@ impl Drop for LungSegmentation {
 }
 
 impl ProcessObject for LungSegmentation {
+    fn getOutputPort(&mut self) -> ProcessObjectPort {
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
+    }
+    fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
+    }
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
+        unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
+    }
+}
+
+pub struct Dilation {
+    ir: FASTDilationRef,
+}
+
+impl Dilation {
+    pub fn new() -> Self {
+        unsafe { Dilation { ir : FASTDilationNew() } }
+    }
+    pub fn setStructuringElementSize(&self, size: i32) {
+        unsafe { FASTDilationSetStructuringElementSize(self.ir, size) };
+    }
+}
+
+impl Drop for Dilation {
+    fn drop(&mut self) {
+        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
+    }
+}
+
+impl ProcessObject for Dilation {
+    fn getOutputPort(&mut self) -> ProcessObjectPort {
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
+    }
+    fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
+    }
+    fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
+        unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
+    }
+}
+
+pub struct Erosion {
+    ir: FASTErosionRef,
+}
+
+impl Erosion {
+    pub fn new() -> Self {
+        unsafe { Erosion { ir : FASTErosionNew() } }
+    }
+    pub fn setStructuringElementSize(&self, size: i32) {
+        unsafe { FASTErosionSetStructuringElementSize(self.ir, size) };
+    }
+}
+
+impl Drop for Erosion {
+    fn drop(&mut self) {
+        unsafe { FASTProcessObjectDelete(self.ir as FASTProcessObjectRef) };
+    }
+}
+
+impl ProcessObject for Erosion {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
         unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
     }

@@ -10,6 +10,8 @@ extern "C" {
     typedef struct FASTOpaqueMeshToSegmentation *FASTMeshToSegmentationRef;
     typedef struct FASTOpaqueSurfaceExtraction *FASTSurfaceExtractionRef;
     typedef struct FASTOpaqueLungSegmentation *FASTLungSegmentationRef;
+    typedef struct FASTOpaqueDilation *FASTDilationRef;
+    typedef struct FASTOpaqueErosion *FASTErosionRef;
 
     /*
      * ImageResampler
@@ -24,6 +26,13 @@ extern "C" {
     void FASTSurfaceExtractionSetThreshold(FASTSurfaceExtractionRef ir, float threshold);
 
     FASTLungSegmentationRef FASTLungSegmentationNew(void);
+    /*
+     * Morphology
+     */
+    FASTDilationRef FASTDilationNew(void);
+    void FASTDilationSetStructuringElementSize(FASTDilationRef ir, int size);
+    FASTErosionRef FASTErosionNew(void);
+    void FASTErosionSetStructuringElementSize(FASTErosionRef ir, int size);
 #ifdef __cplusplus
 }
 #endif
