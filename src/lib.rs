@@ -163,22 +163,6 @@ impl Plane {
 #[cfg(test)]
 mod tests {
     use super::*;
+    /* FAST code must be called from the main thread */
 
-    #[test]
-    fn surface_extraction_test() {
-        let mut importer = ImageFileImporter::new();
-        importer.setFilename("resources/CT/CT-Abdomen.mhd");
-
-        let mut extraction = SurfaceExtraction::new();
-        extraction.setInputConnection(&mut importer.getOutputPort());
-        extraction.setThreshold(300.0);
-
-        let mut surface_renderer = MeshRenderer::new();
-        surface_renderer.setInputConnection(&mut extraction.getOutputPort());
-
-        let mut window = SimpleWindow::new();
-        window.addRenderer(&mut surface_renderer);
-        window.setTimeout(5*1000);
-        window.start();
-    }
 }
