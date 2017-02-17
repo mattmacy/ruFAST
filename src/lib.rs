@@ -34,7 +34,7 @@ impl Drop for ImageImporter {
     }
 }
 
-trait Renderer {
+pub trait Renderer {
     fn getOutputPort(&mut self) -> ProcessObjectPort;
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort);
 }
