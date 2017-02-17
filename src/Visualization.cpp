@@ -5,12 +5,10 @@
 #include "Visualization.h"
 using namespace fast;
 
-struct FASTOpaqueMeshRenderer {
-	MeshRenderer::pointer p;
-};
-struct FASTOpaqueImageRenderer {
-	ImageRenderer::pointer p;
-};
+FAST_REF_IMPL(MeshRenderer)
+FAST_REF_IMPL(ImageRenderer)
+FAST_REF_IMPL(SimpleWindow)
+
 struct FASTOpaqueRenderer {
 	Renderer::pointer p;
 };
@@ -23,13 +21,6 @@ inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
 }
 
 inline Renderer::pointer unwrap(struct FASTOpaqueRenderer  *Tys) {
-	return Tys->p;
-}
-inline MeshRenderer::pointer unwrap(struct FASTOpaqueMeshRenderer  *Tys) {
-	return Tys->p;
-}
-
-inline ImageRenderer::pointer unwrap(struct FASTOpaqueImageRenderer  *Tys) {
 	return Tys->p;
 }
 
@@ -56,18 +47,6 @@ static inline Color unwrap(enum FASTColor col) {
 	}
 }
 
-FASTImageRendererRef FASTImageRendererNew() {
-	struct FASTOpaqueImageRenderer *o = new FASTOpaqueImageRenderer();
-	o->p = ImageRenderer::New();
-	return o;
-}
-
-FASTMeshRendererRef FASTMeshRendererNew() {
-	struct FASTOpaqueMeshRenderer *o = new FASTOpaqueMeshRenderer();
-	o->p = MeshRenderer::New();
-	return o;
-}
-
 void FASTMeshRendererAddInputConnection(FASTMeshRendererRef ir, FASTProcessObjectPortRef port,  enum FASTColor color, float opacity) {
 	unwrap(ir)->addInputConnection(unwrap(port), unwrap(color), opacity);
 }
@@ -91,11 +70,6 @@ FASTPlaneRef FASTPlaneCoronal() {
 FASTPlaneRef FASTPlaneAxial() {
 	return wrap(new Plane(Vector3f(0,0,1)));
 }
-
-struct FASTOpaqueSimpleWindow {
-	SimpleWindow::pointer p;
-};
-
 inline FASTViewRef wrap(const View *Tys) {
 	return reinterpret_cast<FASTViewRef>(const_cast<View*>(Tys));
 }
@@ -104,20 +78,9 @@ inline View *unwrap(FASTViewRef Tys) {
   return reinterpret_cast<View *>(Tys);
 }
 
-
 void FASTViewSetViewingPlane(FASTViewRef view, FASTPlaneRef plane)
 {
 	unwrap(view)->setViewingPlane(*unwrap(plane));
-}
-
-inline SimpleWindow::pointer unwrap(struct FASTOpaqueSimpleWindow  *Tys) {
-	return Tys->p;
-}
-
-FASTSimpleWindowRef FASTSimpleWindowNew() {
-	struct FASTOpaqueSimpleWindow *o = new FASTOpaqueSimpleWindow();
-	o->p = SimpleWindow::New();
-	return o;
 }
 
 void  FASTSimpleWindowAddRenderer(FASTSimpleWindowRef win, FASTRendererRef ir) {

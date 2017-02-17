@@ -16,19 +16,8 @@
 #include "Data.h"
 
 using namespace fast;
-struct FASTOpaqueImage {
-	Image::pointer p;
-};
 
-inline Image::pointer unwrap(struct FASTOpaqueImage  *Tys) {
-	return Tys->p;
-}
-
-FASTImageRef FASTImageNew() {
-	struct FASTOpaqueImage *o = new FASTOpaqueImage();
-	o->p = Image::New();
-	return o;
-}
+FAST_REF_IMPL(Image)
 
 void FASTImageCreate(FASTImageRef Image, uint32_t width, uint32_t height,
 	uint32_t depth, FASTDataType type, uint32_t nrOfComponents, const void *data)

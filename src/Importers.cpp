@@ -9,19 +9,7 @@
 #include "Importers.h"
 using namespace fast;
 
-struct FASTOpaqueImageFileImporter {
-	ImageFileImporter::pointer p;
-};
-
-inline ImageFileImporter::pointer unwrap(struct FASTOpaqueImageFileImporter  *Tys) {
-	return Tys->p;
-}
-
-FASTImageFileImporterRef FASTImageFileImporterNew() {
-	struct FASTOpaqueImageFileImporter *o = new FASTOpaqueImageFileImporter();
-	o->p = ImageFileImporter::New();
-	return o;
-}
+FAST_REF_IMPL(ImageFileImporter)
 
 void FASTImageFileImporterSetFilename(FASTImageFileImporterRef ir, const char *filename) {
 	unwrap(ir)->setFilename(std::string(reinterpret_cast<const char *>(filename)));

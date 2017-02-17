@@ -6,8 +6,7 @@
 extern "C" {
 #endif    
 
-    typedef struct FASTOpaqueImageFileImporter *FASTImageFileImporterRef;
-    FASTImageFileImporterRef FASTImageFileImporterNew(void);
+    FAST_REF_DECL(ImageFileImporter);
     void FASTImageFileImporterSetFilename(FASTImageFileImporterRef ir, const char *filename);
 
 #ifdef __cplusplus

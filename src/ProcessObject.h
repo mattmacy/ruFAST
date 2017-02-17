@@ -11,6 +11,25 @@ extern "C" {
     void FASTProcessObjectDelete(FASTProcessObjectRef ir);
     void FASTProcessObjectPortDelete(FASTProcessObjectPortRef ir);
 
+
+
+#define FAST_REF_DECL(name)			\
+    typedef struct FASTOpaque##name *FAST##name##Ref; \
+    FAST##name##Ref FAST##name##New(void);
+
+#define FAST_REF_IMPL(name)					\
+    struct FASTOpaque##name {					\
+	name::pointer p;					\
+    };								\
+    inline name::pointer unwrap(struct FASTOpaque##name  *Tys) { \
+	return Tys->p;							\
+    }									\
+    FAST##name##Ref FAST##name##New() {				\
+	struct FASTOpaque##name *o = new FASTOpaque##name();	\
+	o->p = name::New();					\
+	return o;							\
+    }									\
+
     
 #ifdef __cplusplus
 }

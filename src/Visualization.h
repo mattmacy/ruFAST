@@ -16,15 +16,14 @@ extern "C" {
 	FASTCyan,
     };
     typedef struct FASTOpaqueRenderer *FASTRendererRef;
-    typedef struct FASTOpaqueImageRenderer *FASTImageRendererRef;
-    typedef struct FASTOpaqueMeshRenderer *FASTMeshRendererRef;
     typedef struct FASTOpaquePlane *FASTPlaneRef;
     typedef struct FASTOpaqueView *FASTViewRef;
-    typedef struct FASTOpaqueSimpleWindow *FASTSimpleWindowRef;
+    FAST_REF_DECL(ImageRenderer)
+    FAST_REF_DECL(MeshRenderer)
+    FAST_REF_DECL(SimpleWindow)
     /*
      * Renderer
      */
-    FASTImageRendererRef FASTImageRendererNew(void);
 
     /*
      * Plane
@@ -41,7 +40,6 @@ extern "C" {
     /*
      * SimpleWindow
      */
-    FASTSimpleWindowRef FASTSimpleWindowNew(void);
 
     void FASTSimpleWindowAddRenderer(FASTSimpleWindowRef win, FASTRendererRef ir);
     void FASTSimpleWindowSet2DMode(FASTSimpleWindowRef win);
@@ -53,7 +51,6 @@ extern "C" {
     /*
      * MeshRenderer
      */
-    FASTMeshRendererRef FASTMeshRendererNew(void);
     void FASTMeshRendererAddInputConnection(FASTMeshRendererRef ir, FASTProcessObjectPortRef port, enum FASTColor color, float opacity);
 #ifdef __cplusplus
 }

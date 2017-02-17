@@ -1,6 +1,7 @@
 #ifndef CFAST_DATA_H
 #define CFAST_DATA_H
 
+#include "ProcessObject.h"
 
 enum FASTDataType {
     TYPE_FLOAT,
@@ -15,10 +16,8 @@ enum FASTDataType {
 
 #ifdef __cplusplus
 extern "C" {
-#endif    
-    typedef struct FASTOpaqueImage *FASTImageRef;
-
-    FASTImageRef FASTImageNew(void);
+#endif
+    FAST_REF_DECL(Image);
     void FASTImageCreate(FASTImageRef Image, uint32_t width, uint32_t height,
 	uint32_t depth, enum FASTDataType data_type, uint32_t nrOfComponents, const void *data);
     void FASTImageSetSpacing(FASTImageRef Image, float x, float y, float z);
