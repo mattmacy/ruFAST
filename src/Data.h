@@ -19,7 +19,6 @@ extern "C" {
     typedef struct FASTOpaqueImage *FASTImageRef;
 
     FASTImageRef FASTImageNew(void);
-    void FASTImageDelete(FASTImageRef Image);
     void FASTImageCreate(FASTImageRef Image, uint32_t width, uint32_t height,
 	uint32_t depth, enum FASTDataType data_type, uint32_t nrOfComponents, const void *data);
     void FASTImageSetSpacing(FASTImageRef Image, float x, float y, float z);

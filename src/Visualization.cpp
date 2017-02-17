@@ -5,40 +5,71 @@
 #include "Visualization.h"
 using namespace fast;
 
+struct FASTOpaqueMeshRenderer {
+	MeshRenderer::pointer p;
+};
+struct FASTOpaqueImageRenderer {
+	ImageRenderer::pointer p;
+};
 struct FASTOpaqueRenderer {
 	Renderer::pointer p;
 };
-
 struct FASTOpaqueProcessObjectPort {
 	ProcessObjectPort p;
 };
-
-inline Renderer::pointer unwrap(struct FASTOpaqueRenderer  *Tys) {
-	return Tys->p;
-}
 
 inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
 	return Tys->p;
 }
 
-FASTRendererRef FASTImageRendererNew() {
-	struct FASTOpaqueRenderer *o = new FASTOpaqueRenderer();
+inline Renderer::pointer unwrap(struct FASTOpaqueRenderer  *Tys) {
+	return Tys->p;
+}
+inline MeshRenderer::pointer unwrap(struct FASTOpaqueMeshRenderer  *Tys) {
+	return Tys->p;
+}
+
+inline ImageRenderer::pointer unwrap(struct FASTOpaqueImageRenderer  *Tys) {
+	return Tys->p;
+}
+
+static inline Color unwrap(enum FASTColor col) {
+	switch (col) {
+	case FASTRed:
+		return Color::Red();
+	case FASTGreen:
+		return Color::Green();
+	case FASTBlue:
+		return Color::Blue();
+	case FASTWhite:
+		return Color::White();
+	case FASTBlack:
+		return Color::Black();
+	case FASTYellow:
+		return Color::Yellow();
+	case FASTPurple:
+		return Color::Purple();
+	case FASTCyan:
+		return Color::Cyan();
+	default:
+		abort();
+	}
+}
+
+FASTImageRendererRef FASTImageRendererNew() {
+	struct FASTOpaqueImageRenderer *o = new FASTOpaqueImageRenderer();
 	o->p = ImageRenderer::New();
 	return o;
 }
 
-FASTRendererRef FASTMeshRendererNew() {
-	struct FASTOpaqueRenderer *o = new FASTOpaqueRenderer();
+FASTMeshRendererRef FASTMeshRendererNew() {
+	struct FASTOpaqueMeshRenderer *o = new FASTOpaqueMeshRenderer();
 	o->p = MeshRenderer::New();
 	return o;
 }
 
-void FASTRendererDelete(FASTRendererRef ir) {
-	delete ir;
-}
-
-void FASTRendererSetInputConnection(FASTRendererRef ir, FASTProcessObjectPortRef p) {
-	unwrap(ir)->setInputConnection(unwrap(p));
+void FASTMeshRendererAddInputConnection(FASTMeshRendererRef ir, FASTProcessObjectPortRef port,  enum FASTColor color, float opacity) {
+	unwrap(ir)->addInputConnection(unwrap(port), unwrap(color), opacity);
 }
 
 inline FASTPlaneRef wrap(const Plane *Tys) {
@@ -87,10 +118,6 @@ FASTSimpleWindowRef FASTSimpleWindowNew() {
 	struct FASTOpaqueSimpleWindow *o = new FASTOpaqueSimpleWindow();
 	o->p = SimpleWindow::New();
 	return o;
-}
-
-void FASTSimpleWindowDelete(FASTSimpleWindowRef win) {
-	delete win;
 }
 
 void  FASTSimpleWindowAddRenderer(FASTSimpleWindowRef win, FASTRendererRef ir) {

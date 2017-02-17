@@ -43,6 +43,7 @@ fn main() {
         .file("src/Data.cpp")
         .file("src/Importers.cpp")
         .file("src/Visualization.cpp")
+        .file("src/ProcessObject.cpp")
         .include("src")
         .include("/usr/local/fast/include")
         .include("/usr/include/eigen3")

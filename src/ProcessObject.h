@@ -5,6 +5,11 @@ extern "C" {
 #endif    
 
     typedef struct FASTOpaqueProcessObjectPort *FASTProcessObjectPortRef;
+    typedef struct FASTOpaqueProcessObject *FASTProcessObjectRef;
+    FASTProcessObjectPortRef FASTProcessObjectGetOutputPort(FASTProcessObjectRef ir, uint32_t portid);
+    void FASTProcessObjectSetInputConnection(FASTProcessObjectRef ir, FASTProcessObjectPortRef port);
+    void FASTProcessObjectDelete(FASTProcessObjectRef ir);
+    void FASTProcessObjectPortDelete(FASTProcessObjectPortRef ir);
 
     
 #ifdef __cplusplus

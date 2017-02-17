@@ -5,16 +5,26 @@
 #ifdef __cplusplus
 extern "C" {
 #endif    
+    enum FASTColor {
+	FASTRed,
+	FASTGreen,
+	FASTBlue,
+	FASTBlack,
+	FASTWhite,
+	FASTYellow,
+	FASTPurple,
+	FASTCyan,
+    };
     typedef struct FASTOpaqueRenderer *FASTRendererRef;
+    typedef struct FASTOpaqueImageRenderer *FASTImageRendererRef;
+    typedef struct FASTOpaqueMeshRenderer *FASTMeshRendererRef;
     typedef struct FASTOpaquePlane *FASTPlaneRef;
     typedef struct FASTOpaqueView *FASTViewRef;
     typedef struct FASTOpaqueSimpleWindow *FASTSimpleWindowRef;
     /*
      * Renderer
      */
-    FASTRendererRef FASTImageRendererNew(void);
-    void FASTRendererDelete(FASTRendererRef ir);
-    void FASTRendererSetInputConnection(FASTRendererRef ir, FASTProcessObjectPortRef port);
+    FASTImageRendererRef FASTImageRendererNew(void);
 
     /*
      * Plane
@@ -32,7 +42,6 @@ extern "C" {
      * SimpleWindow
      */
     FASTSimpleWindowRef FASTSimpleWindowNew(void);
-    void FASTSimpleWindowDelete(FASTSimpleWindowRef win);
 
     void FASTSimpleWindowAddRenderer(FASTSimpleWindowRef win, FASTRendererRef ir);
     void FASTSimpleWindowSet2DMode(FASTSimpleWindowRef win);
@@ -44,8 +53,8 @@ extern "C" {
     /*
      * MeshRenderer
      */
-    FASTRendererRef FASTMeshRendererNew(void);
-
+    FASTMeshRendererRef FASTMeshRendererNew(void);
+    void FASTMeshRendererAddInputConnection(FASTMeshRendererRef ir, FASTProcessObjectPortRef port, enum FASTColor color, float opacity);
 #ifdef __cplusplus
 }
 #endif

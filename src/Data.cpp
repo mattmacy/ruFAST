@@ -30,10 +30,6 @@ FASTImageRef FASTImageNew() {
 	return o;
 }
 
-void FASTImageDelete(FASTImageRef ir) {
-	delete ir;
-}
-
 void FASTImageCreate(FASTImageRef Image, uint32_t width, uint32_t height,
 	uint32_t depth, FASTDataType type, uint32_t nrOfComponents, const void *data)
 {

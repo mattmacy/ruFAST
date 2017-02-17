@@ -12,14 +12,8 @@ using namespace fast;
 struct FASTOpaqueImageFileImporter {
 	ImageFileImporter::pointer p;
 };
-struct FASTOpaqueProcessObjectPort {
-	ProcessObjectPort p;
-};
-inline ImageFileImporter::pointer unwrap(struct FASTOpaqueImageFileImporter  *Tys) {
-	return Tys->p;
-}
 
-inline ProcessObjectPort unwrap(struct FASTOpaqueProcessObjectPort  *Tys) {
+inline ImageFileImporter::pointer unwrap(struct FASTOpaqueImageFileImporter  *Tys) {
 	return Tys->p;
 }
 
@@ -29,16 +23,6 @@ FASTImageFileImporterRef FASTImageFileImporterNew() {
 	return o;
 }
 
-void FASTImageFileImporterDelete(FASTImageFileImporterRef ir) {
-	delete ir;
-}
-
 void FASTImageFileImporterSetFilename(FASTImageFileImporterRef ir, const char *filename) {
 	unwrap(ir)->setFilename(std::string(reinterpret_cast<const char *>(filename)));
-}
-
-FASTProcessObjectPortRef FASTImageFileImporterGetOutputPort(FASTImageFileImporterRef ir) {
-	struct FASTOpaqueProcessObjectPort *o = new FASTOpaqueProcessObjectPort();
-	o->p = unwrap(ir)->getOutputPort();
-	return o;
 }
