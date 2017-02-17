@@ -18,12 +18,11 @@ inline ProcessObject::pointer unwrap(struct FASTOpaqueProcessObject  *Tys) {
 	return Tys->p;
 }
 
-FASTProcessObjectPortRef FASTProcessObjectGetOutputPort(FASTProcessObjectRef ir, uint32_t portid) {
+FASTProcessObjectPortRef FASTProcessObjectGetOutputPortId(FASTProcessObjectRef ir, uint32_t portid) {
 	struct FASTOpaqueProcessObjectPort *o = new FASTOpaqueProcessObjectPort();
 	o->p = unwrap(ir)->getOutputPort(portid);
 	return o;
 }
-
 void FASTProcessObjectSetInputConnection(FASTProcessObjectRef ir, FASTProcessObjectPortRef p) {
 	unwrap(ir)->setInputConnection(unwrap(p));
 }

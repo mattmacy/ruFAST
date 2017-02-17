@@ -37,10 +37,10 @@ impl ImageFileImporter {
 
 impl ProcessObject for ImageFileImporter{
     fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, 0)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
     }
     fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, portid)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
     }
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
         unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
@@ -77,10 +77,10 @@ impl Drop for ImageResampler {
 
 impl ProcessObject for ImageResampler {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, 0)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
     }
     fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, portid)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
     }
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
         unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
@@ -108,10 +108,10 @@ impl Drop for SurfaceExtraction {
 
 impl ProcessObject for SurfaceExtraction {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, 0)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
     }
     fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, portid)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
     }
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
         unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
@@ -137,10 +137,10 @@ impl Drop for LungSegmentation {
 
 impl ProcessObject for LungSegmentation {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, 0)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
     }
     fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, portid)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
     }
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
         unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
@@ -162,10 +162,10 @@ impl Renderer for ImageRenderer {
 }
 impl ProcessObject for ImageRenderer {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, 0)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
     }
     fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, portid)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
     }
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
         unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
@@ -190,10 +190,10 @@ impl MeshRenderer {
 }
 impl ProcessObject for MeshRenderer {
     fn getOutputPort(&mut self) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, 0)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, 0)} }
     }
     fn getOutputPortId(&mut self, portid: u32) -> ProcessObjectPort {
-        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPort(self.ir as FASTProcessObjectRef, portid)} }
+        unsafe { ProcessObjectPort {port : FASTProcessObjectGetOutputPortId(self.ir as FASTProcessObjectRef, portid)} }
     }
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
         unsafe { FASTProcessObjectSetInputConnection(self.ir as FASTProcessObjectRef, port.port); };
