@@ -64,6 +64,9 @@ impl_process_object!(MeshRenderer);
 impl_process_object!(SliceRenderer);
 impl_process_object!(PointRenderer);
 impl_process_object!(SegmentationRenderer);
+impl_process_object!(TextRenderer);
+impl_process_object!(BoundingBoxRenderer);
+impl_process_object!(VolumeRenderer);
 
 impl_process_object!(SimpleWindow);
 
@@ -84,6 +87,9 @@ impl_renderer!(ImageRenderer);
 impl_renderer!(SliceRenderer);
 impl_renderer!(PointRenderer);
 impl_renderer!(SegmentationRenderer);
+impl_renderer!(TextRenderer);
+impl_renderer!(BoundingBoxRenderer);
+impl_renderer!(VolumeRenderer);
 
 impl ImageFileImporter {
     pub fn setFilename(&mut self, name: &str)  {

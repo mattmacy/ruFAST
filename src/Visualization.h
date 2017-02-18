@@ -23,6 +23,9 @@ extern "C" {
     FAST_REF_DECL(PointRenderer)
     FAST_REF_DECL(SliceRenderer)
     FAST_REF_DECL(SegmentationRenderer)
+    FAST_REF_DECL(TextRenderer)
+    FAST_REF_DECL(BoundingBoxRenderer)
+    FAST_REF_DECL(VolumeRenderer)
 
     FAST_REF_DECL(SimpleWindow)
     /*

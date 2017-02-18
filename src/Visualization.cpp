@@ -4,6 +4,10 @@
 #include "FAST/Visualization/SliceRenderer/SliceRenderer.hpp"
 #include "FAST/Visualization/PointRenderer/PointRenderer.hpp"
 #include "FAST/Visualization/SegmentationRenderer/SegmentationRenderer.hpp"
+#include "FAST/Visualization/TextRenderer/TextRenderer.hpp"
+#include "FAST/Visualization/BoundingBoxRenderer/BoundingBoxRenderer.hpp"
+#include "FAST/Visualization/VolumeRenderer/VolumeRenderer.hpp"
+
 
 #include "Visualization.h"
 using namespace fast;
@@ -13,6 +17,11 @@ FAST_REF_IMPL(ImageRenderer)
 FAST_REF_IMPL(SliceRenderer)
 FAST_REF_IMPL(PointRenderer)
 FAST_REF_IMPL(SegmentationRenderer)
+FAST_REF_IMPL(TextRenderer)
+FAST_REF_IMPL(BoundingBoxRenderer)
+FAST_REF_IMPL(VolumeRenderer)
+
+
 FAST_REF_IMPL(SimpleWindow)
 
 struct FASTOpaqueRenderer {
