@@ -23,8 +23,13 @@ FASTProcessObjectPortRef FASTProcessObjectGetOutputPortId(FASTProcessObjectRef i
 	o->p = unwrap(ir)->getOutputPort(portid);
 	return o;
 }
+
 void FASTProcessObjectSetInputConnection(FASTProcessObjectRef ir, FASTProcessObjectPortRef p) {
 	unwrap(ir)->setInputConnection(unwrap(p));
+}
+
+void FASTProcessObjectUpdate(FASTProcessObjectRef ir) {
+	unwrap(ir)->update();
 }
 
 void FASTProcessObjectDelete(FASTProcessObjectRef ir) {

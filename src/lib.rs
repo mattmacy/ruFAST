@@ -51,6 +51,9 @@ pub trait ProcessObject {
     fn setInputConnection(&mut self, port : &mut ProcessObjectPort) {
         unsafe { FASTProcessObjectSetInputConnection(self.getPOR(), port.port); };
     }
+    fn update(&mut self) {
+        unsafe { FASTProcessObjectUpdate(self.getPOR()); };
+    }
 }
 
 impl_process_object!(ImageFileImporter);
@@ -59,9 +62,14 @@ impl_process_object!(SurfaceExtraction);
 impl_process_object!(LungSegmentation);
 impl_process_object!(Dilation);
 impl_process_object!(Erosion);
+impl_process_object!(SeededRegionGrowing);
+impl_process_object!(BinaryThresholding);
+impl_process_object!(GaussianSmoothingFilter);
+/* Renderers */
 impl_process_object!(ImageRenderer);
 impl_process_object!(MeshRenderer);
 impl_process_object!(SliceRenderer);
+impl_process_object!(LineRenderer);
 impl_process_object!(PointRenderer);
 impl_process_object!(SegmentationRenderer);
 impl_process_object!(TextRenderer);
@@ -71,11 +79,15 @@ impl_process_object!(VolumeRenderer);
 impl_process_object!(SimpleWindow);
 
 pub trait Renderer {
+    fn addInputConnection(&mut self, port : &mut ProcessObjectPort);
     fn getIr(&mut self) -> FASTRendererRef;
 }
 macro_rules! impl_renderer {
     ($name:ident) => (
         impl Renderer for $name {
+            fn addInputConnection(&mut self, port : &mut ProcessObjectPort) {
+                unsafe { concat_idents!(FAST, $name, AddInputConnection)(self.ir, port.port); };
+            }
             fn getIr(&mut self) -> FASTRendererRef {
                 self.ir  as FASTRendererRef
             }
@@ -84,10 +96,11 @@ macro_rules! impl_renderer {
 }
 impl_renderer!(MeshRenderer);
 impl_renderer!(ImageRenderer);
-impl_renderer!(SliceRenderer);
+//impl_renderer!(SliceRenderer);
 impl_renderer!(PointRenderer);
 impl_renderer!(SegmentationRenderer);
-impl_renderer!(TextRenderer);
+impl_renderer!(LineRenderer);
+//impl_renderer!(TextRenderer);
 impl_renderer!(BoundingBoxRenderer);
 impl_renderer!(VolumeRenderer);
 
@@ -112,6 +125,15 @@ impl SurfaceExtraction {
     }
 }
 
+impl BinaryThresholding {
+    pub fn setLowerThreshold(&mut self, threshold: f32) {
+        unsafe { FASTBinaryThresholdingSetLowerThreshold(self.ir, threshold); };
+    }
+    pub fn setUpperThreshold(&mut self, threshold: f32) {
+        unsafe { FASTBinaryThresholdingSetUpperThreshold(self.ir, threshold); };
+    }
+}
+
 impl Dilation {
     pub fn setStructuringElementSize(&self, size: i32) {
         unsafe { FASTDilationSetStructuringElementSize(self.ir, size) };
@@ -124,9 +146,45 @@ impl Erosion {
     }
 }
 
+impl SeededRegionGrowing {
+    pub fn setIntensityRange(&self, min: f32, max: f32) {
+        unsafe { FASTSeededRegionGrowingSetIntensityRange(self.ir, min, max) };
+    }
+    pub fn addSeedPoint2D(&self, x: u32, y: u32) {
+        unsafe { FASTSeededRegionGrowingAddSeedPoint2D(self.ir, x, y) };
+    }
+    pub fn addSeedPoint3D(&self, x: u32, y: u32, z: u32) {
+        unsafe { FASTSeededRegionGrowingAddSeedPoint3D(self.ir, x, y, z) };
+    }
+}
+
+impl GaussianSmoothingFilter {
+    pub fn setStandardDeviation(&self, stddev: f32) {
+        unsafe { FASTGaussianSmoothingFilterSetStandardDeviation(self.ir, stddev) };
+    }
+    pub fn setMaskSize(&self, size: u8) {
+        unsafe { FASTGaussianSmoothingFilterSetMaskSize(self.ir, size) };
+    }
+    pub fn setOutputType(&self, data_type: FASTDataType) {
+        unsafe { FASTGaussianSmoothingFilterSetOutputType(self.ir, data_type) };
+    }
+}
+
 impl MeshRenderer {
-    pub fn addInputConnection(&mut self, port : &mut ProcessObjectPort, color: FASTColor, opacity: f32) {
-        unsafe { FASTMeshRendererAddInputConnection(self.ir, port.port, color, opacity); };
+    pub fn addInputConnectionExt(&mut self, port : &mut ProcessObjectPort, color: FASTColor, opacity: f32) {
+        unsafe { FASTMeshRendererAddInputConnectionExt(self.ir, port.port, color, opacity); };
+    }
+}
+
+impl LineRenderer {
+    pub fn addInputConnectionExt(&mut self, port : &mut ProcessObjectPort, color: FASTColor, width: f32) {
+        unsafe { FASTLineRendererAddInputConnectionExt(self.ir, port.port, color, width); };
+    }
+}
+
+impl SegmentationRenderer {
+    pub fn setFillArea(&mut self, fill: bool) {
+        unsafe { FASTSegmentationRendererSetFillArea(self.ir, fill as i32); };
     }
 }
 

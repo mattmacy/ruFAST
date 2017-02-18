@@ -1,6 +1,7 @@
 #include "FAST/Visualization/SimpleWindow.hpp"
 #include "FAST/Visualization/ImageRenderer/ImageRenderer.hpp"
 #include "FAST/Visualization/MeshRenderer/MeshRenderer.hpp"
+#include "FAST/Visualization/LineRenderer/LineRenderer.hpp"
 #include "FAST/Visualization/SliceRenderer/SliceRenderer.hpp"
 #include "FAST/Visualization/PointRenderer/PointRenderer.hpp"
 #include "FAST/Visualization/SegmentationRenderer/SegmentationRenderer.hpp"
@@ -16,6 +17,7 @@ FAST_REF_IMPL(MeshRenderer)
 FAST_REF_IMPL(ImageRenderer)
 FAST_REF_IMPL(SliceRenderer)
 FAST_REF_IMPL(PointRenderer)
+FAST_REF_IMPL(LineRenderer)
 FAST_REF_IMPL(SegmentationRenderer)
 FAST_REF_IMPL(TextRenderer)
 FAST_REF_IMPL(BoundingBoxRenderer)
@@ -62,9 +64,26 @@ static inline Color unwrap(enum FASTColor col) {
 	}
 }
 
-void FASTMeshRendererAddInputConnection(FASTMeshRendererRef ir, FASTProcessObjectPortRef port,  enum FASTColor color, float opacity) {
+FAST_RENDERER_IMPL(ImageRenderer);
+FAST_RENDERER_IMPL(MeshRenderer);
+FAST_RENDERER_IMPL(PointRenderer);
+FAST_RENDERER_IMPL(LineRenderer);
+//FAST_RENDERER_IMPL(SliceRenderer);
+FAST_RENDERER_IMPL(SegmentationRenderer);
+//FAST_RENDERER_IMPL(TextRenderer);
+FAST_RENDERER_IMPL(BoundingBoxRenderer);
+FAST_RENDERER_IMPL(VolumeRenderer);
+
+void FASTMeshRendererAddInputConnectionExt(FASTMeshRendererRef ir, FASTProcessObjectPortRef port,  enum FASTColor color, float opacity) {
 	unwrap(ir)->addInputConnection(unwrap(port), unwrap(color), opacity);
 }
+void FASTLineRendererAddInputConnectionExt(FASTLineRendererRef ir, FASTProcessObjectPortRef port,  enum FASTColor color, float width) {
+	unwrap(ir)->addInputConnection(unwrap(port), unwrap(color), width);
+}
+void FASTSegmentationRendererSetFillArea(FASTSegmentationRendererRef ir, int fill) {
+	unwrap(ir)->setFillArea(fill);
+}
+
 
 inline FASTPlaneRef wrap(const Plane *Tys) {
   return reinterpret_cast<FASTPlaneRef>(const_cast<Plane*>(Tys));

@@ -10,12 +10,21 @@ extern "C" {
     void FASTProcessObjectSetInputConnection(FASTProcessObjectRef ir, FASTProcessObjectPortRef port);
     void FASTProcessObjectDelete(FASTProcessObjectRef ir);
     void FASTProcessObjectPortDelete(FASTProcessObjectPortRef ir);
+    void FASTProcessObjectUpdate(FASTProcessObjectRef ir);
 
 
 
 #define FAST_REF_DECL(name)			\
     typedef struct FASTOpaque##name *FAST##name##Ref; \
     FAST##name##Ref FAST##name##New(void);
+
+#define FAST_RENDERER_DECL(name)			\
+    void FAST##name##AddInputConnection(FAST##name##Ref ir, FASTProcessObjectPortRef port)
+
+#define FAST_RENDERER_IMPL(name)			\
+    void FAST##name##AddInputConnection(FAST##name##Ref ir, FASTProcessObjectPortRef port) { \
+	unwrap(ir)->addInputConnection(unwrap(port));			\
+    }
 
 #define FAST_REF_IMPL(name)					\
     struct FASTOpaque##name {					\

@@ -21,6 +21,7 @@ extern "C" {
     FAST_REF_DECL(ImageRenderer)
     FAST_REF_DECL(MeshRenderer)
     FAST_REF_DECL(PointRenderer)
+    FAST_REF_DECL(LineRenderer)
     FAST_REF_DECL(SliceRenderer)
     FAST_REF_DECL(SegmentationRenderer)
     FAST_REF_DECL(TextRenderer)
@@ -31,6 +32,15 @@ extern "C" {
     /*
      * Renderer
      */
+    FAST_RENDERER_DECL(ImageRenderer);
+    FAST_RENDERER_DECL(MeshRenderer);
+    FAST_RENDERER_DECL(PointRenderer);
+    FAST_RENDERER_DECL(LineRenderer);
+    FAST_RENDERER_DECL(SliceRenderer);
+    FAST_RENDERER_DECL(SegmentationRenderer);
+    FAST_RENDERER_DECL(TextRenderer);
+    FAST_RENDERER_DECL(BoundingBoxRenderer);
+    FAST_RENDERER_DECL(VolumeRenderer);
 
     /*
      * Plane
@@ -56,9 +66,11 @@ extern "C" {
     FASTViewRef FASTSimpleWindowGetView(FASTSimpleWindowRef win);
 
     /*
-     * MeshRenderer
+     * Renderer specific functions
      */
-    void FASTMeshRendererAddInputConnection(FASTMeshRendererRef ir, FASTProcessObjectPortRef port, enum FASTColor color, float opacity);
+    void FASTMeshRendererAddInputConnectionExt(FASTMeshRendererRef ir, FASTProcessObjectPortRef port, enum FASTColor color, float opacity);
+    void FASTLineRendererAddInputConnectionExt(FASTLineRendererRef ir, FASTProcessObjectPortRef port, enum FASTColor color, float width);
+    void FASTSegmentationRendererSetFillArea(FASTSegmentationRendererRef ir, int fill);
 #ifdef __cplusplus
 }
 #endif
